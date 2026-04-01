@@ -1,0 +1,1 @@
+__ci_last_regenerate|i:1774119466;id_param|s:2:"22";tabel|s:15:"weather_station";tanggal|s:10:"2026-03-22";pada|s:10:"2026-03-22";data|s:4:"hari";idlogger|s:5:"10001";idparameter|s:2:"22";nama_parameter|s:17:"Temperatur_Logger";kolom|s:8:"sensor16";satuan|s:3:"°C";tipe_grafik|s:6:"spline";namalokasi|s:17:"Pos AWR Kaliurang";controller|s:13:"station_cuaca";

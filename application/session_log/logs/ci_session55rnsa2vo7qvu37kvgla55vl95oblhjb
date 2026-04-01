@@ -1,0 +1,1 @@
+__ci_last_regenerate|i:1773323365;id_param|s:3:"640";tabel|s:15:"weather_station";tanggal|s:10:"2026-03-12";pada|s:10:"2026-03-12";data|s:4:"hari";idlogger|s:5:"10255";idparameter|s:3:"640";nama_parameter|s:17:"Kelembaban_Logger";kolom|s:8:"sensor14";satuan|s:1:"%";tipe_grafik|s:6:"spline";namalokasi|s:12:"Pos AWR Beji";controller|s:13:"station_cuaca";

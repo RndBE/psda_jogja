@@ -1,0 +1,1 @@
+__ci_last_regenerate|i:1773532292;id_param|s:3:"507";tabel|s:15:"weather_station";tanggal|s:10:"2026-03-15";pada|s:10:"2026-03-15";data|s:4:"hari";idlogger|s:5:"10111";idparameter|s:3:"507";nama_parameter|s:17:"Kelembaban_Logger";kolom|s:8:"sensor14";satuan|s:1:"%";tipe_grafik|s:6:"spline";namalokasi|s:13:"Pos ARR Beran";controller|s:13:"station_cuaca";

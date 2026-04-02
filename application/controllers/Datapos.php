@@ -232,48 +232,6 @@ class Datapos extends CI_Controller {
 		redirect('datapos');
 	}
 
-
-	public function index2()
-	{
-		$idlogger=$this->session->userdata('data_idlogger');
-		$tgl_awal=$this->session->userdata('data_tglawal');
-		$tgl_akhir=$this->session->userdata('data_tglakhir');
-
-		$data['pilih_pos'] = $this->db->from('t_logger')->join('t_lokasi','t_lokasi.id_lokasi=t_logger.lokasi_id')->join('kategori_logger','kategori_logger.id_katlogger=t_logger.katlog_id')->where('t_logger.user_id','4')->order_by('t_logger.katlog_id','asc')->get()->result_array();
-
-		$select = "";
-		$nama_pos = '';
-		if(isset($idlogger) && isset($tgl_awal) && isset($tgl_akhir)){
-			$nama_pos = $this->db->join('t_lokasi','t_lokasi.id_lokasi = t_logger.lokasi_id')->where('t_logger.code_logger',$idlogger)->get('t_logger')->row()->nama_lokasi;
-			$tabel = $this->session->userdata('data_tabel');
-			$query_parameter=$this->db->query("SELECT * FROM t_logger INNER JOIN t_sensor ON t_logger.code_logger = t_sensor.logger_code where t_logger.code_logger = '".$idlogger."' and t_logger.user_id='4' order by cast(SUBSTRING(field_sensor,7) as unsigned)");
-			foreach($query_parameter->result() as $parameter)
-			{
-				if($parameter->field_sensor == "sensor8" || $parameter->field_sensor == "sensor9" ){
-					$select .= "sum(".$parameter->field_sensor.") as ".$parameter->field_sensor.",";
-				}else
-				{
-					$select .= "avg(".$parameter->field_sensor.") as ".$parameter->field_sensor.",";
-				}
-
-			}
-			$select_fix = substr($select, 0, -1);
-			$query_data = $this->db->query('select waktu,'.$select_fix.' from '.$tabel.' use index(waktu) where code_logger = "' . $idlogger . '" and waktu >= "' . $tgl_awal . '" and waktu <= "' . $tgl_akhir . '" group by HOUR(waktu),DAY(waktu),MONTH(waktu),YEAR(waktu) order by waktu asc ');
-			if(!$query_data->result()){
-				$query_data ="kosong";	
-			}
-		}else
-		{
-			$query_parameter="kosong";
-			$query_data ="kosong";
-		}
-		$data['parameter']=$query_parameter;
-		$data['datapos'] = $query_data;
-		$data['nama_lokasi'] = $nama_pos;
-		$data['konten']='konten/back/v_datapos';
-		$this->load->view('template_admin/site',$data);
-	}
-
 	public function index()
 	{
 		$idlogger=$this->session->userdata('data_idlogger');

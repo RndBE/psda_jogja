@@ -1,4 +1,5 @@
-<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php if (!defined('BASEPATH'))
+	exit('No direct script access allowed');
 
 class Awlr extends CI_Controller
 {
@@ -14,28 +15,30 @@ class Awlr extends CI_Controller
 		}
 	}
 
-	public function do_upload() {
-		$config['upload_path']   = './upload_csv/';
+	public function do_upload()
+	{
+		$config['upload_path'] = './upload_csv/';
 		$config['allowed_types'] = 'csv';
-		$config['max_size']      = 2048;
+		$config['max_size'] = 2048;
 
 		$this->load->library('upload', $config);
 
 		if (!$this->upload->do_upload('file')) {
 			echo json_encode([
 				'status' => 'error',
-				'error'  => strip_tags($this->upload->display_errors())
+				'error' => strip_tags($this->upload->display_errors())
 			]);
 		} else {
 			$data = $this->upload->data();
 			echo json_encode([
-				'status'     => 'success',
-				'file_name'  => $data['file_name']
+				'status' => 'success',
+				'file_name' => $data['file_name']
 			]);
 		}
 	}
 
-	public function process_files() {
+	public function process_files()
+	{
 		header('Content-Type: application/json');
 		$input = json_decode(file_get_contents('php://input'), true);
 		$files = $input['files'];
@@ -51,7 +54,8 @@ class Awlr extends CI_Controller
 	}
 
 
-	public function upload_db_json($tabel, $nama_file) {
+	public function upload_db_json($tabel, $nama_file)
+	{
 		$file_path = './upload_csv/' . $nama_file;
 
 		if (!file_exists($file_path)) {
@@ -303,13 +307,15 @@ class Awlr extends CI_Controller
 		$q_pos = $this->db->query("SELECT * FROM t_logger INNER JOIN t_lokasi ON t_logger.lokasi_id = t_lokasi.id_lokasi where katlog_id='8' AND t_logger.user_id='4' or t_logger.code_logger = '10114'");
 
 		foreach ($q_pos->result() as $pos) {
-			if($pos->code_logger == '10114'){
+			if ($pos->code_logger == '10114') {
 				$data[] = array(
-					'idLogger' => $pos->code_logger, 'namaPos' => "Pos AWLR Plataran"
+					'idLogger' => $pos->code_logger,
+					'namaPos' => "Pos AWLR Plataran"
 				);
-			}else{
+			} else {
 				$data[] = array(
-					'idLogger' => $pos->code_logger, 'namaPos' => $pos->nama_lokasi
+					'idLogger' => $pos->code_logger,
+					'namaPos' => $pos->nama_lokasi
 				);
 			}
 
@@ -322,15 +328,14 @@ class Awlr extends CI_Controller
 	public function pilihposarr()
 	{
 		$data = array();
-		if ($this->session->userdata('leveluser') == 'admin' or $this->session->userdata('leveluser') == 'user') {
-			$q_pos = $this->db->query("SELECT * FROM t_logger INNER JOIN t_lokasi ON t_logger.lokasi_logger = t_lokasi.idlokasi where kategori_log='1'");
-		} else {
-			$q_pos = $this->db->query("SELECT * FROM t_logger INNER JOIN t_lokasi ON t_logger.lokasi_logger = t_lokasi.idlokasi where kategori_log='1' AND t_logger.bidang='$bidang'");
-		}
+
+		$q_pos = $this->db->query("SELECT * FROM t_logger INNER JOIN t_lokasi ON t_logger.lokasi_logger = t_lokasi.idlokasi where kategori_log='1'");
+
 
 		foreach ($q_pos->result() as $pos) {
 			$data[] = array(
-				'idLogger' => $pos->id_logger, 'namaPos' => $pos->nama_lokasi
+				'idLogger' => $pos->id_logger,
+				'namaPos' => $pos->nama_lokasi
 			);
 		}
 
@@ -341,10 +346,10 @@ class Awlr extends CI_Controller
 	function set_pos()
 	{
 		$idlog = $this->input->post('pilihpos');
-		if($idlog == '10114') {
+		if ($idlog == '10114') {
 			$querylogger = $this->db->query('select * from t_logger INNER JOIN t_lokasi ON t_logger.lokasi_id=t_lokasi.id_lokasi where code_logger="' . $idlog . '" and t_logger.icon = "awlr"');
 			$this->session->set_userdata('tabel', 'weather_station');
-		}else{
+		} else {
 			$this->session->set_userdata('tabel', 'awlr');
 			$querylogger = $this->db->query('select * from t_logger INNER JOIN t_lokasi ON t_logger.lokasi_id=t_lokasi.id_lokasi where code_logger="' . $idlog . '"');
 		}
@@ -354,9 +359,9 @@ class Awlr extends CI_Controller
 		$id_logger = $log->code_logger;
 		$this->session->set_userdata('namalokasi', $lokasilog);
 		$this->session->set_userdata('id_logger', $id_logger);
-		if($idlog == '10114') {
+		if ($idlog == '10114') {
 			$q_parameter = $this->db->query("SELECT * FROM t_sensor where alias_sensor='Kedalaman_Air_Sumur' order by id limit 1");
-		}else{
+		} else {
 			$q_parameter = $this->db->query("SELECT * FROM t_sensor where logger_code='" . $idlog . "' order by id limit 1");
 		}
 
@@ -475,15 +480,17 @@ class Awlr extends CI_Controller
 	public function pilihparameter($idlogger)
 	{
 		$data = array();
-		if($idlogger == '10114'){
+		if ($idlogger == '10114') {
 			$q_parameter = $this->db->query("SELECT * FROM t_sensor where logger_code='" . $idlogger . "' and alias_sensor != 'Curah_Hujan' ORDER BY CAST(SUBSTR(`field_sensor`,7) AS UNSIGNED)");
-		}else{
+		} else {
 			$q_parameter = $this->db->query("SELECT * FROM t_sensor where logger_code='" . $idlogger . "' ORDER BY CAST(SUBSTR(`field_sensor`,7) AS UNSIGNED)");
 		}
 
 		foreach ($q_parameter->result() as $param) {
 			$data[] = array(
-				'idParameter' => $param->id, 'namaParameter' => $param->alias_sensor, 'fieldParameter' => $param->field_sensor
+				'idParameter' => $param->id,
+				'namaParameter' => $param->alias_sensor,
+				'fieldParameter' => $param->field_sensor
 			);
 		}
 
@@ -497,7 +504,7 @@ class Awlr extends CI_Controller
 		$current_minute = date('i', $current_time); // get the minute value (00-59)
 
 		// calculate the total number of minutes elapsed since the start of the day
-		$total_minutes = ((int)date('H', $current_time) * 60) + (int)$current_minute;
+		$total_minutes = ((int) date('H', $current_time) * 60) + (int) $current_minute;
 
 		echo "Current total minute in the day: " . $total_minutes;
 	}
@@ -603,8 +610,8 @@ class Awlr extends CI_Controller
 			$range = array();
 			$string = $this->session->userdata('pada');
 			$timestamp = strtotime($string);
-			$hari =  date("d", $timestamp);
-			$bulan =  date("m", $timestamp);
+			$hari = date("d", $timestamp);
+			$bulan = date("m", $timestamp);
 			$tahun = date("Y", $timestamp);
 			####################################################################################### HARI ##################
 			if ($this->session->userdata('data') == 'hari') {
@@ -635,7 +642,7 @@ class Awlr extends CI_Controller
 				foreach ($query_data as $datalog) {
 					$jsm = ($datalog['jam'] > 9) ? $datalog['jam'] : '0' . $datalog['jam'];
 					$data_tabel[] = array(
-						'waktu' =>  $jsm . ':00',
+						'waktu' => $jsm . ':00',
 						'dta' => ($datalog[$nama_sensor] != '-') ? number_format($datalog[$nama_sensor], 2) : '-',
 						'min' => ($datalog[$nama_sensor] != '-') ? number_format($datalog['min'], 2) : '-',
 						'max' => ($datalog[$nama_sensor] != '-') ? number_format($datalog['max'], 2) : '-'
@@ -686,7 +693,7 @@ class Awlr extends CI_Controller
 
 				foreach ($query_data as $datalog) {
 					$data_tabel[] = array(
-						'waktu' =>  $datalog['tahun'] . '-' . $datalog['bulan'] . '-' . $datalog['hari'],
+						'waktu' => $datalog['tahun'] . '-' . $datalog['bulan'] . '-' . $datalog['hari'],
 						'dta' => ($datalog[$nama_sensor] != '-') ? number_format($datalog[$nama_sensor], 2) : '-',
 						'min' => ($datalog[$nama_sensor] != '-') ? number_format($datalog['min'], 2) : '-',
 						'max' => ($datalog[$nama_sensor] != '-') ? number_format($datalog['max'], 2) : '-'
@@ -725,7 +732,7 @@ class Awlr extends CI_Controller
 
 				foreach ($query_data as $datalog) {
 					//$waktu[]= date('Y-m-d H',strtotime($datalog->waktu)).":00";
-					$data[] = "[ Date.UTC(" . $datalog['tahun'] . "," . $datalog['bulan'] .  ")," . number_format($datalog[$nama_sensor], 3) . "]";
+					$data[] = "[ Date.UTC(" . $datalog['tahun'] . "," . $datalog['bulan'] . ")," . number_format($datalog[$nama_sensor], 3) . "]";
 					$range[] = "[ Date.UTC(" . $datalog['tahun'] . "," . $datalog['bulan'] . ")," . $datalog['min'] . "," . $datalog['max'] . "]";
 				}
 				for ($i = 1; $i <= 12; $i++) {
@@ -739,7 +746,7 @@ class Awlr extends CI_Controller
 				foreach ($query_data as $datalog) {
 					$jsm = ($datalog['bulan'] > 9) ? $datalog['bulan'] : '0' . $datalog['bulan'];
 					$data_tabel[] = array(
-						'waktu' =>  $datalog['tahun'] . '-' . $jsm,
+						'waktu' => $datalog['tahun'] . '-' . $jsm,
 						'dta' => ($datalog[$nama_sensor] != '-') ? number_format($datalog[$nama_sensor], 2) : '-',
 						'min' => ($datalog[$nama_sensor] != '-') ? number_format($datalog['min'], 2) : '-',
 						'max' => ($datalog[$nama_sensor] != '-') ? number_format($datalog['max'], 2) : '-'
@@ -781,15 +788,15 @@ class Awlr extends CI_Controller
 			return redirect('arr/analisa');
 		}
 
-		$mode        = $this->session->userdata('data');             // 'hari' | 'bulan' | 'tahun'
-		$pada        = $this->session->userdata('pada');             // 'YYYY-MM-DD' atau 'YYYY-MM'
-		$idLogger    = $this->session->userdata('idlogger');
-		$tabel       = $this->session->userdata('tabel');
-		$tipeGrafik  = $this->session->userdata('tipe_grafik');
-		$satuan      = $this->session->userdata('satuan');
-		$sensorKey   = $this->session->userdata('kolom');            // contoh: 'sensor1' | 'debit'
-		$namaParam   = $this->session->userdata('nama_parameter');    // contoh: 'TMA' | 'Debit'
-		$kolomAcuan  = $this->session->userdata('kolom_acuan');      // jika debit → pakai ini
+		$mode = $this->session->userdata('data');             // 'hari' | 'bulan' | 'tahun'
+		$pada = $this->session->userdata('pada');             // 'YYYY-MM-DD' atau 'YYYY-MM'
+		$idLogger = $this->session->userdata('idlogger');
+		$tabel = $this->session->userdata('tabel');
+		$tipeGrafik = $this->session->userdata('tipe_grafik');
+		$satuan = $this->session->userdata('satuan');
+		$sensorKey = $this->session->userdata('kolom');            // contoh: 'sensor1' | 'debit'
+		$namaParam = $this->session->userdata('nama_parameter');    // contoh: 'TMA' | 'Debit'
+		$kolomAcuan = $this->session->userdata('kolom_acuan');      // jika debit → pakai ini
 
 		$kolom = ($sensorKey === 'debit') ? $kolomAcuan : $sensorKey;
 		$namaSensor = 'Rerata_' . $namaParam;
@@ -803,13 +810,13 @@ class Awlr extends CI_Controller
 		$d = (int) date('d', $ts);
 
 		$timeStart = null;
-		$timeEnd   = null; 
-		$groupCols = [];   
+		$timeEnd = null;
+		$groupCols = [];
 		$selectTimeParts = [];
 
 		if ($mode === 'hari') {
 			$timeStart = sprintf('%04d-%02d-%02d 00:00:00', $Y, $m, $d);
-			$timeEnd   = sprintf('%04d-%02d-%02d 23:59:59', $Y, $m, $d);
+			$timeEnd = sprintf('%04d-%02d-%02d 23:59:59', $Y, $m, $d);
 			$groupCols = ["HOUR(waktu)"];
 			$selectTimeParts = [
 				"HOUR(waktu) AS jam",
@@ -820,7 +827,7 @@ class Awlr extends CI_Controller
 		} elseif ($mode === 'bulan') {
 			$daysInMonth = cal_days_in_month(CAL_GREGORIAN, $m, $Y);
 			$timeStart = sprintf('%04d-%02d-01 00:00:00', $Y, $m);
-			$timeEnd   = sprintf('%04d-%02d-%02d 23:59:59', $Y, $m, $daysInMonth);
+			$timeEnd = sprintf('%04d-%02d-%02d 23:59:59', $Y, $m, $daysInMonth);
 			$groupCols = ["DAY(waktu)"];
 			$selectTimeParts = [
 				"DAY(waktu) AS hari",
@@ -829,7 +836,7 @@ class Awlr extends CI_Controller
 			];
 		} else { // 'tahun'
 			$timeStart = sprintf('%04d-01-01 00:00:00', $Y);
-			$timeEnd   = sprintf('%04d-12-31 23:59:59', $Y);
+			$timeEnd = sprintf('%04d-12-31 23:59:59', $Y);
 			$groupCols = ["MONTH(waktu)"];
 			$selectTimeParts = [
 				"MONTH(waktu) AS bulan",
@@ -867,14 +874,14 @@ class Awlr extends CI_Controller
 
 		$rows = $this->db->get()->result_array();
 
-		$data       = [];   // untuk series chart
-		$range      = [];   // min–max area
+		$data = [];   // untuk series chart
+		$range = [];   // min–max area
 		$data_tabel = [];   // tabel di view
 
 		if ($mode === 'hari') {
 			$byHour = [];
 			foreach ($rows as $r) {
-				$byHour[(int)$r['jam']] = $r;
+				$byHour[(int) $r['jam']] = $r;
 			}
 			for ($h = 0; $h < 24; $h++) {
 				if (!isset($byHour[$h])) {
@@ -893,19 +900,19 @@ class Awlr extends CI_Controller
 
 			foreach ($byHour as $r) {
 				$utc = "Date.UTC({$r['tahun']}," . ($r['bulan'] - 1) . ",{$r['hari']},{$r['jam']})";
-				$avg = isset($r[$namaSensor]) ? (float)$r[$namaSensor] : null;
+				$avg = isset($r[$namaSensor]) ? (float) $r[$namaSensor] : null;
 
 				if ($avg !== null) {
-					$data[]  = "[ {$utc}," . number_format($avg, 3, '.', '') . "]";
-					$range[] = "[ {$utc}," . (float)$r['min'] . "," . (float)$r['max'] . "]";
+					$data[] = "[ {$utc}," . number_format($avg, 3, '.', '') . "]";
+					$range[] = "[ {$utc}," . (float) $r['min'] . "," . (float) $r['max'] . "]";
 				}
 
 				$jsm = ($r['jam'] > 9) ? $r['jam'] : ('0' . $r['jam']);
 				$data_tabel[] = [
 					'waktu' => $jsm . ':00',
-					'dta'   => ($avg !== null) ? number_format($avg, 2, '.', '') : '-',
-					'min'   => ($avg !== null) ? number_format((float)$r['min'], 2, '.', '') : '-',
-					'max'   => ($avg !== null) ? number_format((float)$r['max'], 2, '.', '') : '-',
+					'dta' => ($avg !== null) ? number_format($avg, 2, '.', '') : '-',
+					'min' => ($avg !== null) ? number_format((float) $r['min'], 2, '.', '') : '-',
+					'max' => ($avg !== null) ? number_format((float) $r['max'], 2, '.', '') : '-',
 				];
 			}
 
@@ -917,7 +924,7 @@ class Awlr extends CI_Controller
 
 			$byDay = [];
 			foreach ($rows as $r) {
-				$byDay[(int)$r['hari']] = $r;
+				$byDay[(int) $r['hari']] = $r;
 			}
 			for ($i = 1; $i <= $daysInMonth; $i++) {
 				if (!isset($byDay[$i])) {
@@ -936,19 +943,19 @@ class Awlr extends CI_Controller
 			foreach ($byDay as $r) {
 				// JS Date.UTC(Y, m-1, d)
 				$utc = "Date.UTC({$r['tahun']}," . ($r['bulan'] - 1) . ",{$r['hari']})";
-				$avg = isset($r[$namaSensor]) ? (float)$r[$namaSensor] : null;
+				$avg = isset($r[$namaSensor]) ? (float) $r[$namaSensor] : null;
 
 				if ($avg !== null) {
-					$data[]  = "[ {$utc}," . number_format($avg, 3, '.', '') . "]";
-					$range[] = "[ {$utc}," . (float)$r['min'] . "," . (float)$r['max'] . "]";
+					$data[] = "[ {$utc}," . number_format($avg, 3, '.', '') . "]";
+					$range[] = "[ {$utc}," . (float) $r['min'] . "," . (float) $r['max'] . "]";
 				}
 
 				$w = sprintf('%04d-%02d-%02d', $r['tahun'], $r['bulan'], $r['hari']);
 				$data_tabel[] = [
 					'waktu' => $w,
-					'dta'   => ($avg !== null) ? number_format($avg, 2, '.', '') : '-',
-					'min'   => ($avg !== null) ? number_format((float)$r['min'], 2, '.', '') : '-',
-					'max'   => ($avg !== null) ? number_format((float)$r['max'], 2, '.', '') : '-',
+					'dta' => ($avg !== null) ? number_format($avg, 2, '.', '') : '-',
+					'min' => ($avg !== null) ? number_format((float) $r['min'], 2, '.', '') : '-',
+					'max' => ($avg !== null) ? number_format((float) $r['max'], 2, '.', '') : '-',
 				];
 			}
 
@@ -958,7 +965,7 @@ class Awlr extends CI_Controller
 		} else { // tahun
 			$byMonth = [];
 			foreach ($rows as $r) {
-				$byMonth[(int)$r['bulan']] = $r;
+				$byMonth[(int) $r['bulan']] = $r;
 			}
 			for ($i = 1; $i <= 12; $i++) {
 				if (!isset($byMonth[$i])) {
@@ -975,19 +982,19 @@ class Awlr extends CI_Controller
 
 			foreach ($byMonth as $r) {
 				$utc = "Date.UTC({$r['tahun']}," . ($r['bulan'] - 1) . ")";
-				$avg = isset($r[$namaSensor]) ? (float)$r[$namaSensor] : null;
+				$avg = isset($r[$namaSensor]) ? (float) $r[$namaSensor] : null;
 
 				if ($avg !== null) {
-					$data[]  = "[ {$utc}," . number_format($avg, 3, '.', '') . "]";
-					$range[] = "[ {$utc}," . (float)$r['min'] . "," . (float)$r['max'] . "]";
+					$data[] = "[ {$utc}," . number_format($avg, 3, '.', '') . "]";
+					$range[] = "[ {$utc}," . (float) $r['min'] . "," . (float) $r['max'] . "]";
 				}
 
 				$mm = ($r['bulan'] > 9) ? $r['bulan'] : ('0' . $r['bulan']);
 				$data_tabel[] = [
 					'waktu' => $r['tahun'] . '-' . $mm,
-					'dta'   => ($avg !== null) ? number_format($avg, 2, '.', '') : '-',
-					'min'   => ($avg !== null) ? number_format((float)$r['min'], 2, '.', '') : '-',
-					'max'   => ($avg !== null) ? number_format((float)$r['max'], 2, '.', '') : '-',
+					'dta' => ($avg !== null) ? number_format($avg, 2, '.', '') : '-',
+					'min' => ($avg !== null) ? number_format((float) $r['min'], 2, '.', '') : '-',
+					'max' => ($avg !== null) ? number_format((float) $r['max'], 2, '.', '') : '-',
 				];
 			}
 
@@ -996,23 +1003,23 @@ class Awlr extends CI_Controller
 		}
 
 		$dataAnalisa = [
-			'idLogger'    => $idLogger,
-			'namaSensor'  => $namaSensor,
-			'satuan'      => $satuan,
+			'idLogger' => $idLogger,
+			'namaSensor' => $namaSensor,
+			'satuan' => $satuan,
 			'tipe_grafik' => $tipeGrafik,
-			'data'        => $data,        
-			'data_tabel'  => $data_tabel,  
-			'nosensor'    => $noSensorOut, 
-			'range'       => $range,       
-			'tooltip'     => $tooltip
+			'data' => $data,
+			'data_tabel' => $data_tabel,
+			'nosensor' => $noSensorOut,
+			'range' => $range,
+			'tooltip' => $tooltip
 		];
 
 		$payload = json_encode($dataAnalisa);
 		$viewData = [];
-		$viewData['data_sensor']      = json_decode($payload);
-		$viewData['pilih_pos']        = $this->pilihposawlr();
-		$viewData['pilih_parameter']  = $this->pilihparameter($idLogger);
-		$viewData['konten']           = 'konten/back/awlr/analisa_awlr2';
+		$viewData['data_sensor'] = json_decode($payload);
+		$viewData['pilih_pos'] = $this->pilihposawlr();
+		$viewData['pilih_parameter'] = $this->pilihparameter($idLogger);
+		$viewData['konten'] = 'konten/back/awlr/analisa_awlr2';
 
 		$this->load->view('template_admin/site', $viewData);
 	}

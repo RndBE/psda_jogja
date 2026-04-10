@@ -269,7 +269,7 @@ class Datapos extends CI_Controller {
 		$data['parameter']=$query_parameter;
 		$data['datapos'] = $query_data;
 		$data['nama_lokasi'] = $nama_pos;
-		$data['konten']='konten/back/v_datapos2';
+		$data['konten']='konten/back/v_datapos';
 		$this->load->view('template_admin/site',$data);
 	}
 

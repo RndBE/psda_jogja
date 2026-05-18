@@ -135,19 +135,29 @@ if ($data_sensor == null) {
 			</div>
 			<div class="col-12 col-md ">
 				<div class="row g-3 align-items-center justify-content-end">
-					<div class="col-6 d-md-none">
-						<button class="btn w-100 toggle">
+						<div class="col-6 d-md-none">
+							<button class="btn w-100 toggle">
 							<!-- Download SVG icon from http://tabler-icons.io/i/settings -->
 							<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-layout-list" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
 								<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
 								<path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v2a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path>
 								<path d="M4 14m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v2a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path>
 							</svg>
-							Opsi
-						</button>
-					</div>
-					<div class="col-6 col-md-auto">
-						<a class="btn w-100" data-bs-toggle="offcanvas" href="#offcanvasEnd" role="button" aria-controls="offcanvasEnd">
+								Opsi
+							</button>
+						</div>
+						<div class="col-6 col-md-auto">
+							<a class="btn w-100" href="<?= base_url() ?>curah_hujan/livedata">
+								<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chart-line" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+									<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+									<path d="M4 19l16 0"></path>
+									<path d="M4 15l4 -6l4 2l4 -5l4 4"></path>
+								</svg>
+								Live Data
+							</a>
+						</div>
+						<div class="col-6 col-md-auto">
+							<a class="btn w-100" data-bs-toggle="offcanvas" href="#offcanvasEnd" role="button" aria-controls="offcanvasEnd">
 							<!-- Download SVG icon from http://tabler-icons.io/i/settings -->
 							<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file-info" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
 								<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>

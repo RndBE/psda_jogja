@@ -465,7 +465,7 @@ class  Station_cuaca extends CI_Controller
 	function livedata()
 	{
 		if ($this->session->userdata('logged_in')) {
-			$data['konten'] = 'konten/back/arr/analisa_livearr';
+			$data['konten'] = 'konten/back/awr/analisa_liveawr';
 			$this->load->view('template_admin/site', $data);
 		} else {
 			redirect('login');

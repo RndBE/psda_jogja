@@ -65,7 +65,7 @@ class Api extends CI_Controller {
 		$data['awlr_stts'] = $data2;
 		$kb = $this->db->group_by('kabupaten')->get('t_alamat')->result_array();
 
-		$logger = $this->db->join('t_logger','t_alamat.id_logger=t_logger.code_logger')->join('t_lokasi','t_lokasi.id_lokasi = t_logger.lokasi_id')->get('t_alamat')->result_array();
+		$logger = $this->db->join('t_logger','t_alamat.id_logger=t_logger.code_logger')->join('t_lokasi','t_lokasi.id_lokasi = t_logger.lokasi_id')->where('t_logger.user_id', '4')->get('t_alamat')->result_array();
 
 		$s = [];
 		foreach($kb as $key=>$val){
